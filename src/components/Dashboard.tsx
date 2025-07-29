@@ -9,8 +9,12 @@ export const Dashboard = () => {
     symbol: "ETH/USD",
     price: 3456.78,
     change24h: 5.23,
+    ma25: 3467.12,
     ma50: 3423.45,
-    ma200: 3298.76
+    ma100: 3398.76,
+    profitTarget: 3506.22,
+    stopLoss: 3423.45,
+    signalReason: '정방향 정렬 유지 중 - 매수 대기'
   };
 
   return (
@@ -26,10 +30,10 @@ export const Dashboard = () => {
         <div className="absolute inset-0 flex items-center justify-center">
           <div className="text-center space-y-4">
             <h1 className="text-4xl font-bold text-foreground">
-              ETH MA 크로스오버 알림
+              ETH MA 매매전략 시스템
             </h1>
             <p className="text-xl text-muted-foreground max-w-2xl">
-              이더리움 이동평균 교차 시점을 실시간으로 모니터링하고 Discord로 알림을 받으세요
+              MA25/50/100 기반 매매전략으로 자동 알림을 받고 수익을 극대화하세요
             </p>
           </div>
         </div>
@@ -59,7 +63,7 @@ export const Dashboard = () => {
           <div className="inline-flex items-center gap-2 px-4 py-2 rounded-full bg-muted/50 border border-border/50">
             <div className="w-2 h-2 rounded-full bg-crypto-green animate-pulse" />
             <span className="text-sm text-muted-foreground">
-              시스템 상태: 정상 | 마지막 업데이트: 2분 전
+              매매전략 시스템: 정상 | 마지막 업데이트: 2분 전 | 수수료: 0.05%
             </span>
           </div>
         </div>

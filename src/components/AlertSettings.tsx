@@ -10,16 +10,22 @@ import { useState } from "react";
 export const AlertSettings = () => {
   const [discordWebhook, setDiscordWebhook] = useState("");
   const [alertsEnabled, setAlertsEnabled] = useState(true);
+  const [ma25Period, setMa25Period] = useState(25);
   const [ma50Period, setMa50Period] = useState(50);
-  const [ma200Period, setMa200Period] = useState(200);
+  const [ma100Period, setMa100Period] = useState(100);
+  const [maxWaitTime, setMaxWaitTime] = useState(24); // hours
+  const [profitMultiplier, setProfitMultiplier] = useState(1.5);
 
   const handleSaveSettings = () => {
     // This will need Supabase integration for actual saving
     console.log("Settings saved:", {
       discordWebhook,
       alertsEnabled,
+      ma25Period,
       ma50Period,
-      ma200Period
+      ma100Period,
+      maxWaitTime,
+      profitMultiplier
     });
   };
 
@@ -47,28 +53,71 @@ export const AlertSettings = () => {
         </div>
 
         <div className="space-y-4">
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-3 gap-4">
             <div className="space-y-2">
-              <Label htmlFor="ma50">단기 이동평균 (MA50)</Label>
+              <Label htmlFor="ma25">단기 이동평균 (MA25)</Label>
+              <Input
+                id="ma25"
+                type="number"
+                value={ma25Period}
+                onChange={(e) => setMa25Period(parseInt(e.target.value))}
+                min="1"
+                max="50"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ma50">중기 이동평균 (MA50)</Label>
               <Input
                 id="ma50"
                 type="number"
                 value={ma50Period}
                 onChange={(e) => setMa50Period(parseInt(e.target.value))}
-                min="1"
+                min="25"
                 max="100"
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="ma200">장기 이동평균 (MA200)</Label>
+              <Label htmlFor="ma100">장기 이동평균 (MA100)</Label>
               <Input
-                id="ma200"
+                id="ma100"
                 type="number"
-                value={ma200Period}
-                onChange={(e) => setMa200Period(parseInt(e.target.value))}
+                value={ma100Period}
+                onChange={(e) => setMa100Period(parseInt(e.target.value))}
                 min="50"
-                max="500"
+                max="200"
               />
+            </div>
+          </div>
+          
+          <div className="grid grid-cols-2 gap-4">
+            <div className="space-y-2">
+              <Label htmlFor="maxWaitTime">최대 대기시간 (시간)</Label>
+              <Input
+                id="maxWaitTime"
+                type="number"
+                value={maxWaitTime}
+                onChange={(e) => setMaxWaitTime(parseInt(e.target.value))}
+                min="1"
+                max="168"
+              />
+              <p className="text-xs text-muted-foreground">
+                하방돌파 후 상방돌파까지 최대 대기시간
+              </p>
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="profitMultiplier">수익 배수</Label>
+              <Input
+                id="profitMultiplier"
+                type="number"
+                step="0.1"
+                value={profitMultiplier}
+                onChange={(e) => setProfitMultiplier(parseFloat(e.target.value))}
+                min="1"
+                max="5"
+              />
+              <p className="text-xs text-muted-foreground">
+                수익목표 = 매수가 + (매수가-MA50) × 배수
+              </p>
             </div>
           </div>
         </div>
@@ -90,12 +139,27 @@ export const AlertSettings = () => {
           </p>
         </div>
 
-        <div className="flex items-center gap-2 p-3 rounded-lg bg-accent/10 border border-accent/30">
-          <AlertTriangle className="w-4 h-4 text-accent" />
-          <div className="text-sm">
-            <div className="font-medium text-accent">백엔드 연동 필요</div>
-            <div className="text-muted-foreground">
-              실시간 알림 기능을 위해 Supabase 연동이 필요합니다
+        <div className="space-y-3">
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-blue-500/10 border border-blue-500/30">
+            <AlertTriangle className="w-4 h-4 text-blue-500" />
+            <div className="text-sm">
+              <div className="font-medium text-blue-500">매매 전략 설정</div>
+              <div className="text-muted-foreground">
+                • 정방향 정렬: 현재가 &gt; MA25 &gt; MA50 &gt; MA100<br/>
+                • MA25 하방돌파 후 상방돌파시 매수 신호<br/>
+                • 수익목표: 매수가 + (매수가-MA50) × 배수<br/>
+                • 손절가: MA50, 수수료: 0.05%
+              </div>
+            </div>
+          </div>
+          
+          <div className="flex items-center gap-2 p-3 rounded-lg bg-accent/10 border border-accent/30">
+            <AlertTriangle className="w-4 h-4 text-accent" />
+            <div className="text-sm">
+              <div className="font-medium text-accent">백엔드 연동 필요</div>
+              <div className="text-muted-foreground">
+                실시간 알림 기능을 위해 Supabase 연동이 필요합니다
+              </div>
             </div>
           </div>
         </div>
